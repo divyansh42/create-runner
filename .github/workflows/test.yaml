@@ -1,0 +1,33 @@
+name: Test runner workflow
+on: [push, workflow_dispatch]
+
+jobs:
+  install-runner:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout action
+        uses: actions/checkout@v2
+  
+      - name: Check runner
+        id: check-runner
+        uses: redhat-actions/check-self-hosted-runner@main
+        with:
+          github_token: ${{ secrets.pat }}
+          repository_path: divyansh42/s2i-build
+
+      - name: Login Openshift
+        uses: redhat-actions/oc-login@v1
+        with:
+          openshift_server_url: ${{ secrets.OPENSHIFT_SERVER }}
+          openshift_token: ${{ secrets.OPENSHIFT_TOKEN }}
+          insecure_skip_tls_verify: true
+          namespace: diagrawa-code
+
+      - name: Install Runner
+        if: ${{ steps.check-runner.outputs.runner_present == true }}
+        uses: ./
+        with:
+          pat: ${{ secrets.pat }}
+          repository: s2i-build
+          owner: divyansh42
+

@@ -1,0 +1,31 @@
+name: 'Create Self Hosted Runner'
+description: 'Create a self hosted runner on Openshift'
+author: 'Red Hat'
+branding:
+  icon: circle
+  color: red
+inputs:
+  pat:
+    description: 'Personal Access Token'
+    required: true
+  repository:
+    description: 'Repsoitory'
+    required: false
+  owner:
+    description: 'Github Owner or Org'
+    required: true
+  labels:
+    description: 'Labels to add to runner'
+    required: false
+  
+outputs:
+  registry-path:
+    description: 'The registry path to which the image was pushed'
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
+  args:
+    - ${{ inputs.pat }}
+    - ${{ inputs.repository }}
+    - ${{ inputs.owner }}
+    - ${{ inputs.labels }}
