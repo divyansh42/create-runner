@@ -24,7 +24,7 @@ jobs:
           namespace: diagrawa-code
 
       - name: Install Runner
-        if: steps.check-runner.outputs.runner_present == 'true'
+        if: steps.check-runner.outputs.runner_present == 'false'
         uses: ./
         with:
           pat: ${{ secrets.PAT }}
