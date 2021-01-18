@@ -12,7 +12,7 @@ jobs:
         id: check-runner
         uses: redhat-actions/check-self-hosted-runner@main
         with:
-          github_token: ${{ secrets.pat }}
+          github_token: ${{ secrets.PAT }}
           repository_path: divyansh42/s2i-build
 
       - name: Login Openshift
@@ -24,10 +24,10 @@ jobs:
           namespace: diagrawa-code
 
       - name: Install Runner
-        if: ${{ steps.check-runner.outputs.runner_present == true }}
+        if: steps.check-runner.outputs.runner_present == 'true'
         uses: ./
         with:
-          pat: ${{ secrets.pat }}
+          pat: ${{ secrets.PAT }}
           repository: s2i-build
           owner: divyansh42
 
