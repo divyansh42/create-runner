@@ -11,7 +11,7 @@ function appendParams(){
    runner_install_command+=("$1")
 }
 
-runner_install_command=("helm" "install")
+runner_install_command=("helm" "install" "runner")
 
 namespace_arg=""
 
@@ -22,6 +22,7 @@ else
     echo "No namespace provided"
 fi
 
+appendParams "./runner-charts/deployment"
 appendParams "--set-string githubOwner=$INPUT_OWNER"
 if [[ -n $INPUT_REPOSITORY ]]; then
     appendParams "--set-string githubRepository=$INPUT_REPOSITORY"
@@ -32,4 +33,5 @@ appendParams $namespace_arg
 helm install runner-pat ./runner-charts/pat-secret \
 --set-string githubPat=$INPUT_PAT
 
-helm install runner $runner_install_command
+echo "Running: ${runner_install_command[*]} "
+${runner_install_command[*]}
