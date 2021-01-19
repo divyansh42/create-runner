@@ -1,0 +1,11 @@
+name: Test runner workflow
+on:
+  repository_dispatch:
+    types: [opened, deleted]
+
+jobs:
+  echo-test:
+    runs-on: self-hosted
+    steps:
+      - name: Echo Hello World
+        run: echo "Hello world from Runner"

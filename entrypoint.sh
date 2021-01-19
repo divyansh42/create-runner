@@ -26,7 +26,9 @@ appendParams "./runner-charts/deployment"
 appendParams "--set-string githubOwner=$INPUT_OWNER"
 if [[ -n $INPUT_REPOSITORY ]]; then
     appendParams "--set-string githubRepository=$INPUT_REPOSITORY"
-fi    
+fi  
+
+# appendParams "--set runnerLabels="label1\,label2""
 
 appendParams $namespace_arg
 
