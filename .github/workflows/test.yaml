@@ -31,18 +31,6 @@ jobs:
           repository: create-runner
           owner: divyansh42
       
-      # - name: Trigger Test workflow
-      #   uses: actions/github-script@v3
-      #   id: trigger-workflow
-      #   debug: true
-      #   with: 
-      #     github-token: ${{ secrets.PAT }}
-      #     script: |
-      #         await github.request('POST /repos/{owner}/{repo}/dispatches', {
-      #           owner: 'divyansh42',
-      #           repo: 'create-runner',
-      #           event_type: 'repository_dispatch'
-      #         })
       - name: Trigger Test workflow
         uses: actions/github-script@v3
         id: trigger-workflow
@@ -50,10 +38,22 @@ jobs:
           github-token: ${{ secrets.PAT }}
           debug: true
           script: |
-            await github.repos.createDispatchEvent({
-                owner: context.repo.owner,
-                repo: context.repo.repo
-            })
+              await github.request('POST /repos/{owner}/{repo}/dispatches', {
+                owner: 'divyansh42',
+                repo: 'create-runner',
+                event_type: 'repository_dispatch'
+              })
+      # - name: Trigger Test workflow
+      #   uses: actions/github-script@v3
+      #   id: trigger-workflow
+      #   with: 
+      #     github-token: ${{ secrets.PAT }}
+      #     debug: true
+      #     script: |
+      #       await github.repos.createDispatchEvent({
+      #           owner: context.repo.owner,
+      #           repo: context.repo.repo
+      #       })
       - name: Get result
         run: echo "${{steps.trigger-workflow.outputs.result}}"
 
