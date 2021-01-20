@@ -11,7 +11,8 @@ function appendParams(){
    runner_install_command+=("$1")
 }
 
-runner_install_command=("helm" "install" "runner")
+runner_install_command=("helm" "install")
+appendParams $INPUT_RUNNER_NAME
 
 namespace_arg=""
 
@@ -22,7 +23,8 @@ else
     echo "No namespace provided"
 fi
 
-appendParams "./runner-charts/deployment"
+appendParams "./actions-runner/"
+appendParams "--set-string githubPat=$INPUT_PAT"
 appendParams "--set-string githubOwner=$INPUT_OWNER"
 if [[ -n $INPUT_REPOSITORY ]]; then
     appendParams "--set-string githubRepository=$INPUT_REPOSITORY"
@@ -32,8 +34,11 @@ fi
 
 appendParams $namespace_arg
 
-helm install runner-pat ./runner-charts/pat-secret \
---set-string githubPat=$INPUT_PAT
+# helm install runner-pat ./runner-charts/pat-secret \
+# --set-string githubPat=$INPUT_PAT
+
+appendParams "&& echo ---------------------------------------"
+appendParams "&& helm get manifest $INPUT_RUNNER_NAME | kubectl get -f -"
 
 echo "Running: ${runner_install_command[*]} "
 ${runner_install_command[*]}

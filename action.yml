@@ -14,13 +14,13 @@ inputs:
   owner:
     description: 'Github Owner or Org'
     required: true
+  runner_name:
+    description: 'Name of the runner'
+    required: true 
   labels:
     description: 'Labels to add to runner'
     required: false
-  
-outputs:
-  registry-path:
-    description: 'The registry path to which the image was pushed'
+
 runs:
   using: 'docker'
   image: 'Dockerfile'
