@@ -34,14 +34,22 @@ fi
 
 appendParams $namespace_arg
 
-# helm install runner-pat ./runner-charts/pat-secret \
-# --set-string githubPat=$INPUT_PAT
-
 echo "---------------------------------------"
-# helm get manifest $INPUT_RUNNER_NAME | kubectl get -f -
+helm get manifest $INPUT_RUNNER_NAME | oc get -f -
 
 echo "Running: ${runner_install_command[*]} "
 ${runner_install_command[*]}
 
-sleep 100
-echo "::set-output name=runner_created::true"
+runner_created='false'
+
+# wait for all pods to be in running state
+oc wait --for=condition=available --timeout=600s deployment/${INPUT_RUNNER_NAME}
+
+if [[ $? -eq 0 ]]; then
+    runner_created='true';
+    echo "Runner successfully and ready for use."
+else
+    echo "Not able to create Runner"
+fi
+
+echo "::set-output name=runner_created::$runner_created"

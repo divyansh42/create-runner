@@ -1,4 +1,4 @@
-name: Test runner workflow
+name: Check and create runner
 on: [push]
 
 jobs:
@@ -32,18 +32,6 @@ jobs:
           owner: divyansh42
           runner_name: actions-runner
       
-      # - name: Trigger Test workflow
-      #   uses: actions/github-script@v3
-      #   id: trigger-workflow
-      #   with: 
-      #     github-token: ${{ secrets.PAT }}
-      #     debug: true
-      #     script: |
-      #         await github.request('POST /repos/{owner}/{repo}/dispatches', {
-      #           owner: 'divyansh42',
-      #           repo: 'create-runner',
-      #           event_type: 'repository_dispatch'
-      #         })
       - name: Trigger Test workflow
         if: steps.create-runner.outputs.runner_created == 'true'
         uses: actions/github-script@v3
@@ -58,18 +46,6 @@ jobs:
                 workflow_id: 'hello-world.yaml',
                 ref: 'main'
             })
+          
       - name: Get result
         run: echo "${{steps.trigger-workflow.outputs.result}}"
-
-      # - name: Test Trigger
-      #   uses: actions/github-script@v3
-      #   id: trigger-workflow
-      #   with: 
-      #     github-token: ${{ secrets.PAT }}
-      #     debug: true
-      #     script: |
-      #         await octokit.request('GET /repos/{owner}/{repo}/languages', {
-      #           owner: 'octocat',
-      #           repo: 'hello-world'
-      #         })
-
