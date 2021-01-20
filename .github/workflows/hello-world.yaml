@@ -1,11 +1,9 @@
 name: Test runner workflow
-on:
-  repository_dispatch:
-    types: [opened, deleted]
+on: [ workflow_dispatch ]
 
 jobs:
   echo-test:
     runs-on: self-hosted
     steps:
-      - name: Echo Hello World
+      - name: Echo Hello world
         run: echo "Hello world from Runner"

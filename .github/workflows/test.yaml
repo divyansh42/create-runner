@@ -12,8 +12,7 @@ jobs:
         id: check-runner
         uses: redhat-actions/check-self-hosted-runner@main
         with:
-          github_token: ${{ secrets.PAT }}
-          repository_path: divyansh42/create-runner
+          github_pat: ${{ secrets.PAT }}
 
       - name: Login Openshift
         uses: redhat-actions/oc-login@v1
