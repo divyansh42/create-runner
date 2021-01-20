@@ -37,8 +37,11 @@ appendParams $namespace_arg
 # helm install runner-pat ./runner-charts/pat-secret \
 # --set-string githubPat=$INPUT_PAT
 
-appendParams "&& echo ---------------------------------------"
-appendParams "&& helm get manifest $INPUT_RUNNER_NAME | kubectl get -f -"
+echo "---------------------------------------"
+# helm get manifest $INPUT_RUNNER_NAME | kubectl get -f -
 
 echo "Running: ${runner_install_command[*]} "
 ${runner_install_command[*]}
+
+sleep 100
+echo "::set-output name=runner_created::true"

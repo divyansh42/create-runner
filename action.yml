@@ -20,6 +20,9 @@ inputs:
   labels:
     description: 'Labels to add to runner'
     required: false
+outputs:
+  runner_created:
+    description:  "Boolean which signifies whether runner is installed or not"
 
 runs:
   using: 'docker'

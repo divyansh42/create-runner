@@ -1,9 +1,11 @@
-name: Test runner workflow
+name: Test Self Hosted Runner
 on: [ workflow_dispatch ]
 
 jobs:
   echo-test:
     runs-on: self-hosted
     steps:
-      - name: Echo Hello world
-        run: echo "Hello world from Runner"
+      - name: Echo Hostname
+        run: |
+          echo "Hello world from Runner"
+          echo $(hostname)

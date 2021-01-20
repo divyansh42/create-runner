@@ -22,8 +22,9 @@ jobs:
           insecure_skip_tls_verify: true
           namespace: diagrawa-code
 
-      - name: Install Runner
+      - name: Create Runner
         if: steps.check-runner.outputs.runner_present == 'false'
+        id: create-runner
         uses: ./
         with:
           pat: ${{ secrets.PAT }}
@@ -44,6 +45,7 @@ jobs:
       #           event_type: 'repository_dispatch'
       #         })
       - name: Trigger Test workflow
+        if: steps.create-runner.outputs.runner_created == 'true'
         uses: actions/github-script@v3
         id: trigger-workflow
         with: 
