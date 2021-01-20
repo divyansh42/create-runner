@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 set -e 
 set -o pipefail 
+set +x
 
 git clone https://github.com/redhat-actions/openshift-self-hosted-runner
 cd openshift-self-hosted-runner
@@ -34,11 +35,11 @@ fi
 
 appendParams $namespace_arg
 
-echo "---------------------------------------"
-helm get manifest $INPUT_RUNNER_NAME | oc get -f -
-
 echo "Running: ${runner_install_command[*]} "
 ${runner_install_command[*]}
+
+echo "---------------------------------------"
+helm get manifest $INPUT_RUNNER_NAME | oc get -f -
 
 runner_created='false'
 
@@ -47,7 +48,7 @@ oc wait --for=condition=available --timeout=600s deployment/${INPUT_RUNNER_NAME}
 
 if [[ $? -eq 0 ]]; then
     runner_created='true';
-    echo "Runner successfully and ready for use."
+    echo "Runner successfully created and ready for use."
 else
     echo "Not able to create Runner"
 fi
