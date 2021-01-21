@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 set -e 
 set -o pipefail 
-set +x
 
 git clone https://github.com/redhat-actions/openshift-self-hosted-runner
 cd openshift-self-hosted-runner
@@ -25,6 +24,8 @@ else
 fi
 
 appendParams "./actions-runner/"
+appendParams "--set runnerImage=quay.io/redhat-github-actions/redhat-actions-runner"
+appendParams "--set runnerTag=readiness-63e69fd"
 appendParams "--set-string githubPat=$INPUT_PAT"
 appendParams "--set-string githubOwner=$INPUT_OWNER"
 if [[ -n $INPUT_REPOSITORY ]]; then
