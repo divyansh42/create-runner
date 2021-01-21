@@ -20,6 +20,10 @@ inputs:
   labels:
     description: 'Labels to add to runner'
     required: false
+  replicas:
+    description: "Number of Runners to create"
+    required: false
+    default: '1'
 outputs:
   runner_created:
     description:  "Boolean which signifies whether runner is installed or not"

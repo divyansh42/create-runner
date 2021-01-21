@@ -4,14 +4,15 @@ set -o pipefail
 
 git clone https://github.com/redhat-actions/openshift-self-hosted-runner
 cd openshift-self-hosted-runner
+
 ##############################################################
 ## appendParams appends params to the helm command
 ##############################################################
 function appendParams(){
-   runner_install_command+=("$1")
+   runner_create_command+=("$1")
 }
 
-runner_install_command=("helm" "install")
+runner_create_command=("helm" "install")
 appendParams $INPUT_RUNNER_NAME
 
 namespace_arg=""
@@ -26,18 +27,22 @@ fi
 appendParams "./actions-runner/"
 appendParams "--set runnerImage=quay.io/redhat-github-actions/redhat-actions-runner"
 appendParams "--set runnerTag=readiness-63e69fd"
+
 appendParams "--set-string githubPat=$INPUT_PAT"
 appendParams "--set-string githubOwner=$INPUT_OWNER"
+
 if [[ -n $INPUT_REPOSITORY ]]; then
     appendParams "--set-string githubRepository=$INPUT_REPOSITORY"
 fi  
 
-# appendParams "--set runnerLabels="label1\,label2""
+appendParams "--set-string replicas=$INPUT_REPLICAS"
+
+appendParams '--set runnerLabels="label1,label2"'
 
 appendParams $namespace_arg
 
-echo "Running: ${runner_install_command[*]} "
-${runner_install_command[*]}
+echo "Running: ${runner_create_command[*]} "
+${runner_create_command[*]}
 
 echo "---------------------------------------"
 helm get manifest $INPUT_RUNNER_NAME | oc get -f -
