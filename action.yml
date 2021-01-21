@@ -1,38 +1,40 @@
 name: 'Create Self Hosted Runner'
-description: 'Create a self hosted runner on Openshift'
+description: 'Create a self hosted runner on an Openshift Cluster'
 author: 'Red Hat'
 branding:
   icon: circle
   color: red
 inputs:
-  pat:
-    description: 'Personal Access Token'
+  github_pat:
+    description: GitHub Personal Access Token with org and repo level permissions
     required: true
-  repository:
-    description: 'Repsoitory'
-    required: false
-  owner:
-    description: 'Github Owner or Org'
+  runner_location:
+    description: |
+      Repository or org in which to create self-hosted runner.
+      For example, "redhat-actions/create-self-hosted-runner", or just "redhat-actions" to create at the org level.
+      Defaults to the current repository.
     required: true
   runner_name:
-    description: 'Name of the runner'
+    description: 'Name of the runner to create'
     required: true 
   labels:
-    description: 'Labels to add to runner'
+    description: Labels to add to runner. For multiple labels, separate by comma. For example, "label1,label2"
     required: false
   replicas:
-    description: "Number of Runners to create"
+    description: Number of Runners to create
     required: false
     default: '1'
+  namespace:
+    description: Namespace in which to create the runner. Defaults to current context's namespace.
+    required: false
+  fail_if_not_created:
+    description: If true, fail the workflow if a runner is not created
+    required: false
+    default: "false"
 outputs:
   runner_created:
-    description:  "Boolean which signifies whether runner is installed or not"
+    description:  Boolean which signifies whether runner is created or not
 
 runs:
   using: 'docker'
   image: 'Dockerfile'
-  args:
-    - ${{ inputs.pat }}
-    - ${{ inputs.repository }}
-    - ${{ inputs.owner }}
-    - ${{ inputs.labels }}

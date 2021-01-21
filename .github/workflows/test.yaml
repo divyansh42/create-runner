@@ -22,14 +22,13 @@ jobs:
           insecure_skip_tls_verify: true
           namespace: diagrawa-code
 
-      - name: Create Runner
+      - name: Create Self Hosted Runner
         if: steps.check-runner.outputs.runner_present == 'false'
         id: create-runner
         uses: ./
         with:
-          pat: ${{ secrets.PAT }}
-          repository: create-runner
-          owner: divyansh42
+          github_pat: ${{ secrets.PAT }}
+          runner_location: divyansh42/create-runner
           runner_name: actions-runner
       
       - name: Trigger Test workflow

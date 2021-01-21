@@ -12,13 +12,27 @@ function appendParams(){
    runner_create_command+=("$1")
 }
 
+# delete runner if runner with same name exists
+# to avoid action failure
+helm uninstall $INPUT_RUNNER_NAME || true
+
+# split repo owner and repository name
+IFS='/' read -ra location <<< "$INPUT_RUNNER_LOCATION"
+
+GITHUB_OWNER=${location[0]}
+GITHUB_REPO=""
+if [[ ${#location[@]} -eq 2 ]]; then
+    GITHUB_REPO=${location[1]}
+fi
+
 runner_create_command=("helm" "install")
+
 appendParams $INPUT_RUNNER_NAME
 
 namespace_arg=""
 
 if [[ -n $INPUT_NAMESPACE ]]; then
-    echo "Setting service namespace to '$INPUT_NAMESPACE'"
+    echo "Setting namespace to '$INPUT_NAMESPACE'"
     namespace_arg="--namespace=$INPUT_NAMESPACE"
 else
     echo "No namespace provided"
@@ -28,16 +42,16 @@ appendParams "./actions-runner/"
 appendParams "--set runnerImage=quay.io/redhat-github-actions/redhat-actions-runner"
 appendParams "--set runnerTag=readiness-63e69fd"
 
-appendParams "--set-string githubPat=$INPUT_PAT"
-appendParams "--set-string githubOwner=$INPUT_OWNER"
+appendParams "--set-string githubPat=$INPUT_GITHUB_PAT"
+appendParams "--set-string githubOwner=$GITHUB_OWNER"
 
-if [[ -n $INPUT_REPOSITORY ]]; then
-    appendParams "--set-string githubRepository=$INPUT_REPOSITORY"
+if [[ -n $GITHUB_REPO ]]; then
+    appendParams "--set-string githubRepository=$GITHUB_REPO"
 fi  
 
 appendParams "--set-string replicas=$INPUT_REPLICAS"
 
-appendParams '--set runnerLabels="label1,label2"'
+# appendParams '--set runnerLabels="label1\,label2"'
 
 appendParams $namespace_arg
 
@@ -57,6 +71,9 @@ if [[ $? -eq 0 ]]; then
     echo "Runner successfully created and ready for use."
 else
     echo "Not able to create Runner"
+    if [[ $INPUT_FAIL_IF_NOT_CREATED ]]; then
+        exit 1
+    fi
 fi
 
 echo "::set-output name=runner_created::$runner_created"
